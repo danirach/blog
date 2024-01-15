@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'show'])->name('dashboard');
+    Route::get('/post', [PostController::class,'show'])->name('post');
+    Route::post('/post', [PostController::class,'create']);
+    Route::get('/post/{id}', [PostController::class,'detailPost'])->name('post-detail');
+    Route::post('/comment', [PostController::class,'createComment']);
+    Route::post('/reply', [PostController::class,'createReply']);
+    Route::post('/postlike', [PostController::class,'toggleLike'])->name('postlike');
 });
